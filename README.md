@@ -1,4 +1,4 @@
-# °²×°²å¼ş
+# å®‰è£…æ’ä»¶
 
 *  hexo-math
 *  hexo-tag-plantuml
