@@ -53,6 +53,8 @@ help lines/.style={color=blue!50,very thin}
   \draw[Karl’s grid] (0,0) grid (5,5);
 ```
 
+<!-- more -->
+
 这也同时提示我们风格的用法类似**\draw**[*style*]。如果定义局部（在环境内部）的风格，则像下面这样
 
 ```tex

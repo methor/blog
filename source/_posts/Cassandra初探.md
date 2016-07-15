@@ -1,11 +1,9 @@
 title: Cassandra初探
-tags: []
+tags:
+  - Cassandra
 categories:
   - Distributed System
 date: 2016-07-13 11:38:00
----
-title: Cassandra初探
-tags: 
 ---
 
 Cassandra是一个去中心化的、高可靠性高可扩展性的、高吞吐率的分布式存储系统。它是由Facebook开发，论文发表在[paper address](http://dl.acm.org/citation.cfm?id=1773922)上。这里给出这篇论文中描述的关键概念。
@@ -40,6 +38,8 @@ Cassandra使用修改版的$\Phi$ Accural Failure Detector来探测节点failure
 
 （Facebook相关）Facebook环境中节点会暂时断开但并不意味着永久离开，因此不需要partitioning的重新平衡和unreachable replica的repair。因此节点的加入和离开由人来控制，然而人可能犯错，因此一个Cassandra实例的消息都带有这个实例的名字。当人工操作失误时，操作将被制止。
 
+<!-- more -->
+
 # Local Persistence
 涉及到两个存储结构：*commit log*以及*in-memory data structure*。写操作会触发对commit log和in-memory data structrue的写入。对后者的写入发生在对前者的写入完成后，这样即使发生错误也能从commit log恢复。commit log dump到在每个节点配备的较为昂贵的磁盘中，in-memory data structure dump到在廉价磁盘中。当in-memory data structure超过一定大小会被dump。对commit log和in-memory data structure的写入会产生一个索引便于后续查找。一个后台过程会负责把dump到磁盘的文件合并为一个文件。
 
@@ -56,3 +56,16 @@ request routing模块是一个状态机：
 1. schedule repair数据，即repair没有最新的数据的replica
 
 写入操作可以是同步型或者异步型，同步型需要一定数量的replica的回应，异步型则（或许）只需要一个replica的回应。
+
+Cassandra的日志系统purge commit log条目。Facebook的做法是老的commit log大小达到128MB时进行rolling out。每个commit log有一个包含了bit vector的header，header的大小是固定的。对于每个column family，都有一个in-memory data structure以及一个文件。每当对应于一个column family的in-memory data structure被dump到磁盘时，设置commit log中对应的bit表明这个column family被写入了磁盘，进而表示这份消息被*commit*了。当commit log被roll时，检查它的bit vector和在之前被roll的commit log的bit vector。如果发现所有数据都被写入了磁盘，这些commit logs会被删除。对commit log的写入可以是normal mode也可以是*fast sync* mode。在后面的情况中，写入会被缓存。这种方法可能会造成数据丢失（commit log丢失意味着无法根据记录重放原始操作）。在此模式下，dump in-memory data structure的方式也变为缓存。
+
+传统数据库的初衷不是为了处理高吞吐率的写入，于是Cassandra将对磁盘的写入变形为串行化写入从而最大化磁盘写入吞吐率（？）。因为写入磁盘的文件不会改变，于是读取他们的时候不用加锁。Cassandra的server实例的读/写操作在实际上（莫非写操作无锁没有理论依据？）都是都是无锁的。
+
+磁盘上的数据文件被划分（broke down）为一系列的块。Cassandra根据primary key来索引数据，一个块最多包含128个key，并且由一个block index划出界限（demarcated）。block index记录了一个key在block中的相对偏移量和数据的大小。当in-memory data structure被dump到文件中时，会产生一个block index并且它们（？）的偏移量会被写入到磁盘作为索引。这份索引也会驻留在内存中。（这一段原文的表述似乎有问题）
+
+# 小结
+Cassandra是一个去中心化的、高可靠性高扩展性的、写操作吞吐率高的分布式存储系统。它采用partitioning、replication、membership、failure detection等手段实现这些特性。
+
+我的问题有
+> commit log被删除的条件是所有数据存储到了磁盘上。如果in-memory data structure对应的dump文件也丢失了，难道依靠replica特性找回？commit log的删除策略似乎有些问题。
+> 文中说读取操作不用加锁，那么为什么说写入也不用加锁？难道是所谓的串行化的原因吗？还有，这些部分是对磁盘文件而言，对于驻留在内存的commit log和in-memory data structure的读取和写入呢？它们是会变的，似乎也不存在串行化这一说。
