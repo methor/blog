@@ -5,7 +5,6 @@ categories:
   - Distributed System
 date: 2016-07-13 11:38:00
 ---
-
 Cassandra是一个去中心化的、高可靠性高可扩展性的、高吞吐率的分布式存储系统。它是由Facebook开发，论文发表在[paper address](http://dl.acm.org/citation.cfm?id=1773922)上。这里给出这篇论文中描述的关键概念。
 
 # Data Model
@@ -67,5 +66,5 @@ Cassandra的日志系统purge commit log条目。Facebook的做法是老的commi
 Cassandra是一个去中心化的、高可靠性高扩展性的、写操作吞吐率高的分布式存储系统。它采用partitioning、replication、membership、failure detection等手段实现这些特性。
 
 我的问题有
-> commit log被删除的条件是所有数据存储到了磁盘上。如果in-memory data structure对应的dump文件也丢失了，难道依靠replica特性找回？commit log的删除策略似乎有些问题。
-> 文中说读取操作不用加锁，那么为什么说写入也不用加锁？难道是所谓的串行化的原因吗？还有，这些部分是对磁盘文件而言，对于驻留在内存的commit log和in-memory data structure的读取和写入呢？它们是会变的，似乎也不存在串行化这一说。
+* commit log被删除的条件是所有数据存储到了磁盘上。如果in-memory data structure对应的dump文件也丢失了，难道依靠replica特性找回？commit log的删除策略似乎有些问题。
+* 文中说读取操作不用加锁，那么为什么说写入也不用加锁？难道是所谓的串行化的原因吗？还有，这些部分是对磁盘文件而言，对于驻留在内存的commit log和in-memory data structure的读取和写入呢？它们是会变的，似乎也不存在串行化这一说。
