@@ -13,7 +13,7 @@ date: 2016-11-01 14:22:00
 * Passing an argument in a function {% label primary by %}
 * T object = *other* while *other* is passed in one of T's constructor
 
-
+<table><tr><td bgcolor=orange>背景色是：orange</td></tr></table>
 
 ## Initialization
 * Copy initialization

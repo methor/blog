@@ -72,13 +72,15 @@ jiathis: true
 
 plugin: plantuml
 
+
 feed:
   type: atom
   path: atom.xml
   limit: 20
   hub:
 
-
+admin:
+  deployCommand: "hexo-deploy.bat"
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:

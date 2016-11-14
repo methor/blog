@@ -1,3 +1,9 @@
+title: hexo_install_config
+categories:
+  - 工具
+  - hexo
+date: 2016-05-22 20:13:53
+tags:
 ---
 title: hexo_install_config
 date: 2016-05-22 20:13:53
@@ -203,12 +209,7 @@ Bob-->Alice: I am good thanks!
 # 选用主题
 
 # 丰富你的页面
-[各种颜色标签、小图标等等](https://github.com/wzpan/hexo-tag-bootstrap)
-[github提交卡片](https://github.com/Gisonrg/hexo-github-card)
-[各类视频](https://github.com/m80126colin/hexo-tag-owl)
-
-
-
-
-
-
+[各种颜色标签、小图标等等](https://github.com/wzpan/hexo-tag-bootstrap) \(限定 freemind 主题\)   
+[github提交卡片](https://github.com/Gisonrg/hexo-github-card)  
+[各类视频](https://github.com/m80126colin/hexo-tag-owl)  
+[各种 tag](https://github.com/search?utf8=%E2%9C%93&q=hexo+tag)
