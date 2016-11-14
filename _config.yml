@@ -81,9 +81,10 @@ feed:
 
 admin:
   deployCommand: "hexo-deploy.bat"
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/methor/methor.github.io
+  repo: git@github.com:methor/methor.github.io.git
   branch: master
